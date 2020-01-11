@@ -14,6 +14,8 @@ loadSuccess, characters = tfGoogleSpreadsheet.LoadTFWheelChoices()
 if not loadSuccess:
     raise Exception("Failed to load tf list spreadsheet")
 
+lastTfCharacterUpdate = datetime.datetime.now()
+
 def PickFromList(list, cumulativeWeights):
     count = len(cumulativeWeights)
     weight = random.randint(0, cumulativeWeights[count - 1])
@@ -181,6 +183,7 @@ async def TriggerTF(message, parsedTags):
 
 async def tick():
     currentTime = datetime.datetime.now()
+    #check to see if any tfs have expired
     for (guildID, guildConfig) in Config.config.guildConfigs.items():
         for (user, tf) in list(guildConfig.tfs.items()):
             if tf.timeTfSet is not None:
@@ -205,3 +208,11 @@ async def tick():
 
                     del guildConfig.tfs[user]
                     Config.SaveConfig()
+    #check to see if we want to refresh the tf list
+    global lastTfCharacterUpdate
+    global characters
+    if currentTime - lastTfCharacterUpdate > datetime.timedelta(days=0.25):
+        lastTfCharacterUpdate = currentTime
+        loadSuccess, newCharacters = tfGoogleSpreadsheet.LoadTFWheelChoices()
+        if loadSuccess:
+            characters = newCharacters
