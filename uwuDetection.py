@@ -6,7 +6,7 @@ import unicodedata
 #import os
 #import urllib.request
 
-uwuRegex = re.compile('\\b[uo][^a-z]*[w][^a-z]*[uo]\\b', re.IGNORECASE)
+uwuRegex = re.compile('\\b[uo0][^a-z]*[w][^a-z]*[uo0]\\b', re.IGNORECASE)
 
 async def DoesMessageContainUWU(message):
     normalisedString = unicodedata.normalize('NFD', message.content)
