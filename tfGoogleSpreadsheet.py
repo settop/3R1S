@@ -28,7 +28,9 @@ def LoadTFWheelChoices():
 
         if (len(name) == 0 or
                 type(weight) is not int or weight <= 0):
-            print("Row {0} is invalid".format(row))
+            if any(len(v) > 0 for k, v in row.items()):
+                print("Row {0} is invalid".format(row))
+            #else a completely empty row so just ignore
             continue
 
         newCharacter = TfCharacter()
