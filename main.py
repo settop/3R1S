@@ -42,16 +42,18 @@ async def BullyDetection(message):
         await SetBully(message.guild, message.author)
 
 helpCommandRegex = re.compile("!Help", re.IGNORECASE)
+getUserIDCommandRegex = re.compile("!GetMyUserID", re.IGNORECASE)
 setBullyCommandRegex = re.compile("!SetBullyRole \"(.*?)\" \"(.*?)\"", re.IGNORECASE)
 
 async def HandleCommands(message):
     matchResult = helpCommandRegex.match(message.content)
     isAdmin = Client.IsAdmin(message.author)
     if matchResult is not None:
-        helpString = """!Help - Prints this message you're currently reading\n"""
+        helpString = "!Help - Prints this message you're currently reading\n"
+        helpString += "!GetMyUserID - Returns your discord user id\n"
         if isAdmin:
-            helpString = helpString + """!SetBullyRole "ServerName" "RoleName" - Sets the bully role for a server\n"""
-        helpString = helpString + tfWheel.GetHelp(False, isAdmin)
+            helpString += """!SetBullyRole "ServerName" "RoleName" - Sets the bully role for a server\n"""
+        helpString += tfWheel.GetHelp(False, isAdmin)
         await message.channel.send(helpString)
         return
     if isAdmin:
@@ -74,6 +76,10 @@ async def HandleCommands(message):
             Config.SaveConfig()
             await message.channel.send('Set the bully role to \"{0}\" for server \"{1}\"'.format(bullyRole, serverName))
             return
+    matchResult = getUserIDCommandRegex.match(message.content)
+    if matchResult:
+        await message.channel.send('Your user id is {0}'.format(message.author.id))
+
     await tfWheel.HandleCommands(message, isAdmin)
 
 

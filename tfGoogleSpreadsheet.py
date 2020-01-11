@@ -37,7 +37,7 @@ def LoadTFWheelChoices():
         newCharacter.specificUser = specificUser if type(specificUser) is int else None
         for columnName, tag in row.items():
             if columnName.startswith("Tag") and len(tag) > 0:
-                newCharacter.tags.append(tag)
+                newCharacter.tags.append(tag.lower())
 
         characters.characters.append(newCharacter)
     return True, characters

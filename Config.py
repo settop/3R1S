@@ -27,15 +27,26 @@ class GuildConfig:
         if memberID not in self.bullies:
             self.bullies[memberID] = Bully()
 
+class UserConfig:
+    def __init__(self):
+        self.tfIncludeTags = []
+        self.tfExcludeTags = []
+
 class Config:
     def __init__(self):
         self.guildConfigs = {}
         self.token = ""
         self.additionalAdmins = []
+        self.userConfigs = {}
+
+    def GetUserConfig(self, userID):
+        if userID not in self.userConfigs:
+            self.userConfigs[userID] = UserConfig()
+        return self.userConfigs[userID]
 
 def encode_guildConfig(o):
     if isinstance(o, Config):
-        return {"__Config__":True, "GuildConfigs":o.guildConfigs, "Token":o.token, "AdditionalAdmins":o.additionalAdmins}
+        return {"__Config__":True, "GuildConfigs":o.guildConfigs, "Token":o.token, "AdditionalAdmins":o.additionalAdmins, "UserConfigs":o.userConfigs}
     elif isinstance(o, GuildConfig):
         return {"__GuildConfig__":True, "BullyRole":o.bullyRoleID, "BullyTime":o.bullyTime, "TFTime":o.tfTime, "Bullies":o.bullies, "TFs":o.tfs}
     elif isinstance(o, datetime.timedelta):
@@ -46,6 +57,8 @@ def encode_guildConfig(o):
         return {"__Bully__": True, "TimeBullySet": o.timeBullySet, "PermaBully": o.permaBully}
     elif isinstance(o, TF):
         return {"__TF__": True, "TimeTfSet": o.timeTfSet, "OriginalName": o.originalName}
+    elif isinstance(o, UserConfig):
+        return {"__UserConfig__": True, "TFIncludeTags": o.tfIncludeTags, "TFExcludeTags": o.tfExcludeTags}
     else:
        type_name = o.__class__.__name__
        raise TypeError("Object of type '{0}' is not JSON serializable".format(type_name))
@@ -56,10 +69,21 @@ def decode_guildConfig(dct):
 
         guildConfigsTemp = dct["GuildConfigs"]
         for (key, value) in guildConfigsTemp.items():
+            #convert the key into an int from a string
             config.guildConfigs[int(key)] = value
 
         config.token = dct["Token"]
         config.additionalAdmins = dct["AdditionalAdmins"]
+
+        try:
+            userConfigsTemp = dct["UserConfigs"]
+            for (key, value) in userConfigsTemp.items():
+                #convert the key into an int from a string
+                config.userConfigs[int(key)] = value
+        except KeyError:
+            pass
+
+
         return config
     if "__GuildConfig__" in dct:
         guildConfig = GuildConfig()
@@ -90,14 +114,19 @@ def decode_guildConfig(dct):
         tf.timeTfSet = dct["TimeTfSet"]
         tf.originalName = dct["OriginalName"]
         return tf
+    elif "__UserConfig__" in dct:
+        userConfig = UserConfig()
+        userConfig.tfIncludeTags = dct["TFIncludeTags"]
+        userConfig.tfExcludeTags = dct["TFExcludeTags"]
+        return userConfig
     return dct
 
 config = None
 
 def LoadConfig():
+    global config
     try:
         with open(configFile, 'r') as file:
-            global config
             config = json.load(file, object_hook=decode_guildConfig)
     except FileNotFoundError:
         print("No config file found")
