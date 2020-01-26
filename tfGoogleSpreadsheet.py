@@ -4,11 +4,15 @@ from oauth2client.service_account import ServiceAccountCredentials
 from tfWheelUtils import TfCharacters
 from tfWheelUtils import TfCharacter
 
-scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
-creds = ServiceAccountCredentials.from_json_keyfile_name('google_secret.json', scope)
-client = gspread.authorize(creds)
-
 def LoadTFWheelChoices():
+    try:
+        scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+        creds = ServiceAccountCredentials.from_json_keyfile_name('google_secret.json', scope)
+        client = gspread.authorize(creds)
+    except Exception as ex:
+        print("Failed to log in to google spreadsheet")
+        return False
+
     try:
         spreadsheet = client.open("Tf Wheel Choices")
         sheet = spreadsheet.worksheet("Characters")
