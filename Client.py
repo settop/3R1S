@@ -9,6 +9,6 @@ def IsAdmin(user):
     if user.id in Config.config.additionalAdmins:
         return True
     for guild in client.guilds:
-        if guild.owner.id == user.id:
+        if guild.owner_id == user.id:
             return True
     return False
