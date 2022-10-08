@@ -186,6 +186,9 @@ async def tick():
                             #remove the bully
                             foundGuild = discord.utils.find(lambda g: g.id == guildID, Client.client.guilds)
                             member = foundGuild.get_member(user)
+                            if member is None:
+                                del guildConfig.bullies[user]
+                                continue
                             currentRoles = member.roles
 
                             print("Bully role on {0} in server \"{1}\" expired".format(member.name, foundGuild.name))
