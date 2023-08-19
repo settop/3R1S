@@ -2,7 +2,8 @@
 import discord
 import Config
 
-client = discord.Client()
+clientIntents = discord.Intents(messages=True, message_content=True, guilds=True)
+client = discord.Client(intents=clientIntents)
 updatingMembers = []
 
 def IsAdmin(user):

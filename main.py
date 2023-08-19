@@ -8,6 +8,7 @@ import Client
 import Config
 import uwuDetection
 import tfWheel
+from discord.ext import tasks, commands
 
 async def SetBully(guild, member):
     print("Setting bully role on server member \"{0}\" in server \"{1}\"".format(member.name, guild.name))
@@ -209,8 +210,7 @@ async def tick():
 
 
 
-future = asyncio.ensure_future(tick(), loop=Client.client.loop)
-
+#future = asyncio.ensure_future(tick(), loop=Client.client.loop)
 Config.LoadConfig()
 try:
     Client.client.run(Config.config.token)

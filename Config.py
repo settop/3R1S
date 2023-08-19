@@ -153,7 +153,7 @@ def SaveConfig():
 def EnsureGuild(guildID):
     global config
     if guildID not in config.guildConfigs:
-        config.guildConfigs[guild.id] = GuildConfig()
+        config.guildConfigs[guildID] = GuildConfig()
 
 def GetGuildConfig(guildID):
     if guildID in config.guildConfigs:
