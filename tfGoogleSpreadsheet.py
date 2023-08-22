@@ -26,7 +26,7 @@ def LoadTFWheelChoices():
 
     characters = TfCharacters()
     for row in sheetData:
-        name = row["Character"]
+        name = row["Character"].strip('\n')
         weight = row["Weight"]
         specificUser = row["UserID"]
 
@@ -42,8 +42,10 @@ def LoadTFWheelChoices():
         newCharacter.weight = weight
         newCharacter.specificUser = specificUser if type(specificUser) is int else None
         for columnName, tag in row.items():
-            if columnName.startswith("Tag") and len(tag) > 0:
-                newCharacter.tags.append(tag.lower())
+            if columnName.startswith("Tag") and type(tag) is str:
+                tag = tag.strip()
+                if len(tag) > 0:
+                    newCharacter.tags.append(tag.lower())
 
         characters.characters.append(newCharacter)
     return True, characters

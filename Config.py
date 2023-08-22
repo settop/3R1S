@@ -13,7 +13,6 @@ class Bully:
 class TF:
     def __init__(self):
         self.timeTfSet = None
-        self.originalName = None
 
 class GuildConfig:
     def __init__(self):
@@ -56,7 +55,7 @@ def encode_guildConfig(o):
     elif isinstance(o, Bully):
         return {"__Bully__": True, "TimeBullySet": o.timeBullySet, "PermaBully": o.permaBully}
     elif isinstance(o, TF):
-        return {"__TF__": True, "TimeTfSet": o.timeTfSet, "OriginalName": o.originalName}
+        return {"__TF__": True, "TimeTfSet": o.timeTfSet}
     elif isinstance(o, UserConfig):
         return {"__UserConfig__": True, "TFIncludeTags": o.tfIncludeTags, "TFExcludeTags": o.tfExcludeTags}
     else:
@@ -112,7 +111,6 @@ def decode_guildConfig(dct):
     elif "__TF__" in dct:
         tf = TF()
         tf.timeTfSet = dct["TimeTfSet"]
-        tf.originalName = dct["OriginalName"]
         return tf
     elif "__UserConfig__" in dct:
         userConfig = UserConfig()
